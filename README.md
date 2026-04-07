@@ -42,7 +42,7 @@ End-to-end test automation suite for a production-like e-commerce platform, buil
 ## Running locally
 
 \`\`\`bash
-git clone https://github.com/YOUR_USERNAME/e-commerce-playwright-suite.git
+git clone https://github.com/Munachimso2/e-commerce-playwright-suite.git
 cd e-commerce-playwright-suite
 npm install
 npx playwright install
@@ -50,8 +50,8 @@ npx playwright install
 
 Create a \`.env\` file:
 \`\`\`
-USER_EMAIL=your_test_email@example.com
-USER_PASSWORD=your_test_password
+USER_EMAIL=dokafor77@gmail.com
+USER_PASSWORD=Secure123
 \`\`\`
 
 Run all tests:
@@ -67,4 +67,4 @@ npx playwright show-report
 ## Author
 
 **David Okafor** — Junior QA Automation Engineer
-[GitHub](https://github.com/YOUR_USERNAME) · [LinkedIn](https://linkedin.com/in/YOUR_PROFILE)
+[GitHub](https://github.com/Munachimso2) · [LinkedIn](https://linkedin.com/in/affia-david-okafor-155407189)
