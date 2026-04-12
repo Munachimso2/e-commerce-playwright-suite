@@ -1,4 +1,3 @@
-import { test } from "./fixtures.spec";
 import { expect } from "@playwright/test";
 import { PageObjects } from "./page-objects";
 
