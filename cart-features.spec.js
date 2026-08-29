@@ -23,6 +23,9 @@ test.describe("Cart Functionality", () => {
         await page.addInitScript(value => {
             window.localStorage.setItem("token", value)
         }, token)
+        const pageObjects = new PageObjects(page);
+        await pageObjects.goto();
+        await pageObjects.clearCart();
     })
 
     test("Add single product to cart", async ({ page }) => {
@@ -31,7 +34,7 @@ test.describe("Cart Functionality", () => {
         await pageObjects.addProductToCart("ZARA COAT 3");
         // add assertions to verify cart state
         await pageObjects.gotoCart();
-        await expect(pageObjects.cartItems).toHaveText("ZARA COAT 3");
+        await expect(pageObjects.cartItems).toHaveText(["ZARA COAT 3"]);
         await expect(pageObjects.cartItems).toHaveCount(1);
         await expect(pageObjects.cartItems).toBeVisible();
     })
@@ -51,4 +54,4 @@ test.describe("Cart Functionality", () => {
         }
 
     })
-})      
+})

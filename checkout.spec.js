@@ -22,6 +22,9 @@ test.describe("Checkout Functionality", () => {
         await page.addInitScript(value => {
             window.localStorage.setItem("token", value)
         }, token)
+        const pageObjects = new PageObjects(page);
+        await pageObjects.goto();
+        await pageObjects.clearCart();
     })
 
     test("Verify checkout flow", async ({ page }) => {

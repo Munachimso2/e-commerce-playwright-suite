@@ -12,30 +12,9 @@ test.describe("Login Automation", () => {
     }
 
     const invalidEmail = {
-        userEmail: "dokafor16@gmail.com",
+        userEmail: "invalid-user@example.com",
         userPassword: process.env.USER_PASSWORD
     }
-    let token;
-
-
-    test.beforeEach(async ({ page, request }) => {
-        const response = await request.post("https://rahulshettyacademy.com/api/ecom/auth/login", {
-            data: validCredentials,
-            headers: {
-                    "Content-Type": "application/json"
-            } 
-        })
-        expect(response.ok()).toBeTruthy()
-        const body = await response.json()
-        token = body.token
-
-
-        await page.addInitScript(value => {
-            window.localStorage.setItem("token", value)
-        }, token)
-
-        // await expect(page).toHaveURL("https://rahulshettyacademy.com/client/#/dashboard/dash")
-    })
 
     test("valid login", async ({ page }) => {
         await page.goto("https://rahulshettyacademy.com/client/#/auth/login")
@@ -90,7 +69,15 @@ test.describe("Login Automation", () => {
     })
 
 
-    test("user logs out successfully", async ({ page }) => {
+    test("user logs out successfully", async ({ page, request }) => {
+       const response = await request.post("https://rahulshettyacademy.com/api/ecom/auth/login", {
+           data: validCredentials
+       })
+       expect(response.ok()).toBeTruthy()
+       const { token } = await response.json()
+       await page.addInitScript(value => {
+           window.localStorage.setItem("token", value)
+       }, token)
        await page.goto("https://rahulshettyacademy.com/client/#/dashboard/dash")
 
        await page.getByRole("button", {name: "Sign Out"}).click()

@@ -5,6 +5,9 @@ export class PageObjects {
         this.page = page;
         this.searchBox = page.getByRole("textbox", { name: "search" });
         this.allProducts = page.locator(".card");
+        this.zaraProduct = this.allProducts.filter({ hasText: "ZARA COAT 3" });
+        this.adidas = this.allProducts.filter({ hasText: "ADIDAS ORIGINAL" });
+        this.iphone = this.allProducts.filter({ hasText: "IPHONE 13 PRO" });
         this.cartBtn = this.page.locator("li").getByRole("button", { name: "Cart" });
         this.toastContainer = this.page.locator("#toast-container");
         this.emptyCartMsg = this.page.getByRole("heading", { name: "No Products in Your Cart !" });
@@ -18,6 +21,7 @@ export class PageObjects {
         this.ordersBtn = this.page.getByRole("button", { name: "Orders" });
         this.ordersTable = this.page.locator("table");
         this.orderID = this.page.locator('tr.line-item.ng-star-inserted')
+        this.removeCartItemButtons = this.page.locator(".cartSection button.btn-danger");
     }
 
     async goto() {
@@ -41,17 +45,26 @@ export class PageObjects {
 
     async gotoCart() {
         await this.cartBtn.click();
-        await this.page.waitForLoadState('networkidle');
+        await this.page.waitForURL(/dashboard\/cart/);
+    }
+
+    async clearCart() {
+        await this.gotoCart();
+        while (await this.removeCartItemButtons.count()) {
+            const removeButton = this.removeCartItemButtons.first();
+            await removeButton.click();
+            await removeButton.waitFor({ state: "detached" });
+        }
+        await this.goto();
     }
 
     async checkoutProduct() {
         await this.checkoutBtn.click();
-        await this.page.waitForLoadState('networkidle');
+        await this.page.waitForURL(/dashboard\/order/);
     }
 
     async placeOrder() {
         await this.placeOrderBtn.click();
-        await this.page.waitForLoadState('networkidle');
     }
 
     async placeOrderWithCountry(country) {
@@ -62,14 +75,14 @@ export class PageObjects {
 
     async placeOrderWithInvalidCountry(country) {
         await this.countryInput.type(country);
+        await this.countryInput.press("Escape");
     }
 
     async gotoOrders() {
         await this.ordersBtn.click();
-        await this.page.waitForLoadState('networkidle');
+        await this.page.waitForURL(/dashboard\/myorders/);
     }
 
 
 
 }
-

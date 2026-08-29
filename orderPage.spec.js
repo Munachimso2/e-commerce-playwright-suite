@@ -3,6 +3,23 @@ import { expect } from "@playwright/test";
 import { PageObjects } from "./page-objects";
 
 test.describe("Order Page Functionality", () => {
+    test.beforeEach(async ({ page, request }) => {
+        const response = await request.post("https://rahulshettyacademy.com/api/ecom/auth/login", {
+            data: {
+                userEmail: process.env.USER_EMAIL,
+                userPassword: process.env.USER_PASSWORD
+            }
+        });
+        expect(response.ok()).toBeTruthy();
+        const { token } = await response.json();
+        await page.addInitScript(value => {
+            window.localStorage.setItem("token", value);
+        }, token);
+        const pageObjects = new PageObjects(page);
+        await pageObjects.goto();
+        await pageObjects.clearCart();
+    });
+
     test("Create an order and verify order details", async ({ page }) => {
         const pageObjects = new PageObjects(page);
         await pageObjects.goto();
@@ -40,14 +57,14 @@ test.describe("Order Page Functionality", () => {
         expect(pageObjects.page.url()).toContain("https://rahulshettyacademy.com/client/#/dashboard/thanks?");
         await pageObjects.gotoOrders();
         await expect(pageObjects.ordersTable).toBeVisible();
-        await expect(pageObjects.orderId).toContainText('ZARA COAT 3', { ignoreCase: true });
+        await expect(pageObjects.orderID).toContainText('ZARA COAT 3', { ignoreCase: true });
     })
 
        
     test('create an order using API and verify it appears in the orders list', async ({ page, request }) => {
         const pageObjects = new PageObjects(page);
 
-        const loginResponse = await request.post('https://rahulshettyacademy.com/client/api/ecom/auth/login', {
+        const loginResponse = await request.post('https://rahulshettyacademy.com/api/ecom/auth/login', {
             data: {
                 userEmail: process.env.USER_EMAIL,
                 userPassword: process.env.USER_PASSWORD
@@ -64,7 +81,7 @@ test.describe("Order Page Functionality", () => {
         }, token)
 
 
-        const response = await request.post('https://rahulshettyacademy.com/client/api/ecom/order/create-order', {
+        const response = await request.post('https://rahulshettyacademy.com/api/ecom/order/create-order', {
             data: {
                 orders: [
                     {
@@ -79,10 +96,10 @@ test.describe("Order Page Functionality", () => {
             }
         });
         const orderResponse = await response.json();
-        const orderId = orderResponse.orders[1];
+        const orderId = orderResponse.orders[0];
         await pageObjects.goto();
         await pageObjects.gotoOrders();
         await expect(pageObjects.ordersTable).toBeVisible();
         await expect(pageObjects.orderID).toContainText(orderId, { ignoreCase: true });
     })
-})  
+})

@@ -5,7 +5,7 @@ const validUser = {
     middleName: "David",
     lastName: "Okafor",
     handle: "@affia",
-    email: "affiaokafor@gmail.com",
+    email: `qa-portfolio-${Date.now()}@example.com`,
     password: process.env.USER_PASSWORD
 }
 
