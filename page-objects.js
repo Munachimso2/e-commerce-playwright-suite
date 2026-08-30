@@ -20,7 +20,7 @@ export class PageObjects {
         this.placeOrderBtn = this.page.getByText("Place Order", { exact: true });
         this.ordersBtn = this.page.getByRole("button", { name: "Orders" });
         this.ordersTable = this.page.locator("table");
-        this.orderID = this.page.locator('tr.line-item.ng-star-inserted')
+        this.orderRows = this.ordersTable.locator("tbody tr");
         this.removeCartItemButtons = this.page.locator(".cartSection button.btn-danger");
     }
 
@@ -64,6 +64,7 @@ export class PageObjects {
     }
 
     async placeOrder() {
+        await this.countryInput.press("Tab");
         await this.placeOrderBtn.click();
     }
 

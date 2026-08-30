@@ -49,7 +49,7 @@ test.describe("Checkout Functionality", () => {
         await pageObjects.gotoCart();
         await expect(pageObjects.emptyCartMsg).toBeVisible();
         await expect(pageObjects.toastContainer).toContainText("No Product in Your Cart");
-        await expect(pageObjects.page.getByText("No Product in Your Cart")).toBeVisible();
+        await expect(pageObjects.page.getByRole("alert", { name: "No Product in Your Cart" }).first()).toBeVisible();
 
     })
 

@@ -57,7 +57,7 @@ test.describe("Order Page Functionality", () => {
         expect(pageObjects.page.url()).toContain("https://rahulshettyacademy.com/client/#/dashboard/thanks?");
         await pageObjects.gotoOrders();
         await expect(pageObjects.ordersTable).toBeVisible();
-        await expect(pageObjects.orderID).toContainText('ZARA COAT 3', { ignoreCase: true });
+        await expect(pageObjects.ordersTable).toContainText('ZARA COAT 3', { ignoreCase: true });
     })
 
        
@@ -81,12 +81,22 @@ test.describe("Order Page Functionality", () => {
         }, token)
 
 
+        expect(loginResponse.ok()).toBeTruthy();
+
+        const productsResponse = await request.get('https://rahulshettyacademy.com/api/ecom/product/get-all-products', {
+            headers: { "Authorization": token }
+        });
+        expect(productsResponse.ok()).toBeTruthy();
+        const productsBody = await productsResponse.json();
+        const product = productsBody.data.find(({ productName }) => productName === "ZARA COAT 3");
+        expect(product, "ZARA COAT 3 must be available in the catalogue").toBeTruthy();
+
         const response = await request.post('https://rahulshettyacademy.com/api/ecom/order/create-order', {
             data: {
                 orders: [
                     {
                         "country": "Nigeria",
-                        "productOrderedId": "63cbdc8a1a9e6f1c8b4d2e7"
+                        "productOrderedId": product._id
                     }
                 ]
             },
@@ -95,11 +105,14 @@ test.describe("Order Page Functionality", () => {
                 "Authorization": token
             }
         });
+        expect(response.ok()).toBeTruthy();
         const orderResponse = await response.json();
+        expect(orderResponse.orders).toBeInstanceOf(Array);
+        expect(orderResponse.orders.length).toBeGreaterThan(0);
         const orderId = orderResponse.orders[0];
         await pageObjects.goto();
         await pageObjects.gotoOrders();
         await expect(pageObjects.ordersTable).toBeVisible();
-        await expect(pageObjects.orderID).toContainText(orderId, { ignoreCase: true });
+        await expect(pageObjects.ordersTable).toContainText(orderId, { ignoreCase: true });
     })
 })
