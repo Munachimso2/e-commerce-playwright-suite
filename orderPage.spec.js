@@ -83,7 +83,7 @@ test.describe("Order Page Functionality", () => {
 
         expect(loginResponse.ok()).toBeTruthy();
 
-        const productsResponse = await request.get('https://rahulshettyacademy.com/api/ecom/product/get-all-products', {
+        const productsResponse = await request.post('https://rahulshettyacademy.com/api/ecom/product/get-all-products', {
             headers: { "Authorization": token }
         });
         expect(productsResponse.ok()).toBeTruthy();
